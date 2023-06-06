@@ -1,6 +1,5 @@
 menu:
-  Home: /
-  Archives: /archives
+  Home: /archives
 
 # gitment
 gitment: false
