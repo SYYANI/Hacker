@@ -1,0 +1,46 @@
+<%
+var items = [];
+
+if (posts) {
+  if (typeof posts.each === 'function') {
+    posts.each(function(item) {
+      items.push(item);
+    });
+  } else if (Array.isArray(posts)) {
+    items = posts.slice();
+  }
+}
+
+var currentYear = null;
+%>
+
+<section id="list">
+  <% if (title) { %>
+    <h2><%= title %></h2>
+  <% } %>
+
+  <% items.forEach(function(item, index) { %>
+    <% var itemYear = item.date.format('YYYY'); %>
+    <% if (itemYear !== currentYear) { %>
+      <% if (currentYear !== null) { %>
+        </ul>
+      <% } %>
+      <% currentYear = itemYear; %>
+      <h3><%= itemYear %></h3>
+      <ul>
+    <% } %>
+
+    <li>
+      <% if (item.link) { %>
+        <a href="<%- item.link %>" target="_blank" rel="noopener"><%= item.title || item.link %></a>
+      <% } else { %>
+        <a href="<%- url_for(item.path) %>"><%= item.title %></a>
+      <% } %>
+      <time class="date-meta"><%= item.date.format('MMM D') %></time>
+    </li>
+
+    <% if (index === items.length - 1) { %>
+      </ul>
+    <% } %>
+  <% }) %>
+</section>

@@ -1,1 +1,16 @@
-<%- partial('components/categories', {index: false}) %>
+<% if (page.category) { %>
+  <%- partial('components/post_list', { title: '#' + page.category, posts: page.posts }) %>
+  <%- partial('components/pagination') %>
+<% } else { %>
+  <section id="list">
+    <h2>Categories</h2>
+    <ul>
+      <% site.categories.sort('name').each(function(category){ %>
+        <li>
+          <a href="<%- url_for(category.path) %>"><%= category.name %></a>
+          <span class="count">(<%= category.length %> entries)</span>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+<% } %>

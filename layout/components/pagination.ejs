@@ -1,8 +1,9 @@
-<nav class="pagination">
-  <% if (page.prev){ %>
-  <a href="<%- config.root %><%- page.prev_link %>" class="pagination-prev"><%= __('prev') %></a>
-  <% } %>
-  <% if (page.next){ %>
-  <a href="<%- config.root %><%- page.next_link %>" class="pagination-next"><%= __('next') %></a>
-  <% } %>
-</nav>
+<% if (page.total && page.total > 1) { %>
+  <%- paginator({
+    prev_text: '&laquo;',
+    next_text: '&raquo;',
+    end_size: 1,
+    mid_size: 2,
+    current_class: 'current'
+  }) %>
+<% } %>

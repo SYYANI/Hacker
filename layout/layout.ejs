@@ -1,20 +1,14 @@
-<!DOCTYPE HTML>
-<html>
+<!doctype html>
+<html lang="<%= config.language || 'en' %>">
 <%- partial('components/head') %>
-
 <body>
-<div class="blog">
-  <div class="content">
-
+  <div id="container">
     <%- partial('components/header') %>
-
-    <main class="site-main posts-loop">
-    <%- body %>
+    <main>
+      <%- body %>
     </main>
-
     <%- partial('components/footer') %>
-    <%- partial('components/googleanalytics') %>
   </div>
-</div>
+  <%- partial('components/googleanalytics') %>
 </body>
 </html>

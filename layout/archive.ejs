@@ -1,1 +1,9 @@
-<%- partial('components/archive', {pagination: config.archive}) %>
+<%
+var archiveTitle = 'All Posts';
+if (page.year) {
+  archiveTitle = page.month ? page.year + '/' + page.month : String(page.year);
+}
+%>
+
+<%- partial('components/post_list', { title: archiveTitle, posts: page.posts }) %>
+<%- partial('components/pagination') %>

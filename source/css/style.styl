@@ -1,12 +1,472 @@
 @import "base/normalize.css"
-@import "components/layout"
-@import "components/header"
-@import "components/article"
-@import "components/archive"
-@import "components/tags"
-@import "components/categories"
-@import "components/pagination"
-@import "components/footer"
-@import "components/icon"
-@import "components/syntax"
-@import "components/responsive"
+
+:root
+  --bg: #fafaf8
+  --text: #333333
+  --muted: #6e6e6e
+  --link: #006666
+  --link-hover: #004c4c
+  --line: #cecece
+  --soft: #efefef
+  --soft-strong: #bbbbbb
+  --inline-code: #ffcccc
+  --block-code: #ffffcc
+  --shadow: #bbbbbb
+  --blockquote-line: #cecece
+  --nav-active: #666666
+
+@media (prefers-color-scheme: dark)
+  :root
+    --bg: #2A2829
+    --text: #ffffff
+    --muted: #b8b8b8
+    --link: #00dddd
+    --link-hover: #66ffff
+    --line: #8a8a8a
+    --soft: #3e3b3c
+    --soft-strong: #797979
+    --inline-code: #7c3030
+    --block-code: #6c6c33
+    --shadow: #444444
+    --blockquote-line: #797979
+    --nav-active: #ffffff
+
+html
+  font-size 16px
+
+body
+  margin 0
+  padding 0
+  overflow-x hidden
+  background var(--bg)
+  color var(--text)
+  font-family "Roboto Slab", serif
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+time,
+nav,
+footer
+  font-family "Ruda", sans-serif
+
+a
+  color var(--link)
+
+a:hover
+  color var(--link-hover)
+
+#container
+  margin 0
+  padding 0
+  max-width 100vw
+  min-height 100vh
+  display flex
+  flex-direction column
+
+#container > *
+  width 700px
+  margin 0 auto
+
+@media only screen and (max-width: 800px)
+  #container > *
+    width auto
+    margin 0 1.2em
+
+#container > header
+  margin-bottom 1rem
+  padding-top 2.2rem
+
+#container > header h1
+  margin 0
+  font-size clamp(2.1rem, 4vw, 2.8rem)
+
+#container > header h1 a
+  color var(--text)
+  text-decoration none
+
+#container > header p
+  margin 0.4rem 0 0
+  color var(--muted)
+
+#container > nav
+  border-bottom solid 3px var(--line)
+  padding 0 0 0.6rem
+  margin-bottom 1.6rem
+
+#container > nav ul
+  margin 0
+  padding 0
+  list-style none
+  display flex
+  justify-content flex-end
+  gap 1rem
+  flex-wrap wrap
+
+#container > nav ul li
+  margin 0
+
+#container > nav a
+  color var(--text)
+  text-decoration none
+  padding-bottom 0.35rem
+
+#container > nav a.active
+  border-bottom 0.45rem solid var(--nav-active)
+
+main
+  flex 1 0 auto
+  line-height 1.7
+  font-size 1.15rem
+
+#home ul,
+#list ul
+  margin 0
+  padding 0
+  list-style none
+
+#home li
+  margin 0
+  padding 0.8rem 0 1.6rem
+
+#home li:last-child
+  padding-bottom 0
+
+#home h1
+  margin 0.2em 0
+  line-height 1.2
+  font-size clamp(1.6rem, 3vw, 2.15rem)
+
+.meta-aside,
+#home aside,
+article aside
+  margin 0.5em 0 1em
+  color var(--muted)
+  font-size 0.8em
+
+.meta-aside ul,
+#home aside ul,
+article aside ul
+  margin 0
+  padding 0
+  list-style none
+
+.meta-aside ul li,
+#home aside ul li,
+article aside ul li
+  margin 0
+  padding 0
+
+.meta-aside a,
+#home aside a,
+article aside a
+  color var(--muted)
+  text-decoration none
+
+.post-summary
+  font-size 1rem
+
+.post-summary > *:first-child
+  margin-top 0
+
+.post-summary > *:last-child
+  margin-bottom 0
+
+.read-more
+  display inline-block
+  margin-top 0.65rem
+  text-decoration none
+
+article
+  padding-bottom 1rem
+
+article > h1
+  margin 0 0 0.3rem
+  line-height 1.2
+  font-size clamp(2rem, 4vw, 2.7rem)
+
+article h2,
+article h3,
+article h4
+  line-height 1.3
+
+article p,
+article ul,
+article ol,
+article dl,
+article figure,
+article blockquote,
+article table,
+article pre
+  margin 1rem 0
+
+article ul,
+article ol
+  padding-left 1.3rem
+
+article li + li
+  margin-top 0.35rem
+
+article hr
+  border 0
+  border-top 1px solid var(--line)
+  margin 1.5rem 0
+
+article img,
+figure img,
+img
+  width 100%
+  max-width 100%
+  height auto
+  box-shadow 0 3px 3px var(--shadow)
+
+header .full-image,
+header figure.full img,
+header img[src*="full"],
+article .full-image,
+article figure.full img,
+article img[src*="full"],
+section:not(#list):not(#home) .full-image,
+section:not(#list):not(#home) figure.full img,
+section:not(#list):not(#home) img[src*="full"]
+  width 100%
+
+@supports (width: 100vw)
+  header .full-image,
+  header figure.full img,
+  header img[src*="full"],
+  article .full-image,
+  article figure.full img,
+  article img[src*="full"],
+  section:not(#list):not(#home) .full-image,
+  section:not(#list):not(#home) figure.full img,
+  section:not(#list):not(#home) img[src*="full"]
+    width 100vw
+    position relative
+    left 50%
+    right 50%
+    margin-left -50vw
+    margin-right -50vw
+
+.mid-image,
+figure.mid img,
+img[src*="mid"]
+  width 100%
+
+@supports (width: 100vw)
+  .mid-image,
+  figure.mid img,
+  img[src*="mid"]
+    width 800px
+    position relative
+    left 50%
+    right 50%
+    margin-left -400px
+    margin-right -400px
+
+  @media only screen and (max-width: 800px)
+    .mid-image,
+    figure.mid img,
+    img[src*="mid"]
+      width 100%
+      left 0
+      right 0
+      margin 0
+
+.float-image,
+figure.float img,
+img[src*="float"]
+  width 300px
+  float left
+  margin 0 1em 1em -3em
+
+.float-image-right,
+figure.float-right img,
+img[src*="float-right"]
+  width 300px
+  float right
+  margin 0 -3em 1em 1em
+
+@media only screen and (max-width: 800px)
+  .float-image,
+  figure.float img,
+  img[src*="float"],
+  .float-image-right,
+  figure.float-right img,
+  img[src*="float-right"]
+    float none
+    margin 0
+    width 100%
+
+figure
+  margin 0
+
+figure figcaption p
+  margin-top 0.3em
+  font-size 0.8em
+  font-style italic
+
+blockquote
+  margin 1em
+  border-left solid 0.1em var(--blockquote-line)
+  padding 0.5em 1.5em 0.5em 2.2em
+  position relative
+  background-color var(--soft)
+  box-shadow 0 -1px 0 var(--soft-strong) inset
+
+blockquote::before
+  content "“"
+  position absolute
+  left 0.25em
+  top -0.2em
+  font-size 3.2em
+  line-height 1
+  color rgba(160, 160, 160, 0.35)
+
+@media only screen and (max-width: 800px)
+  blockquote
+    margin 1em 0
+    padding 0.6em 0.8em 0.6em 1.6em
+
+article pre,
+article .highlight pre
+  overflow-x auto
+  padding 0.8em
+  font-size 0.9em
+  background-color var(--block-code)
+  box-shadow 0 -1px 0 var(--soft-strong) inset
+
+article pre code
+  background none
+  padding 0
+
+article p code,
+article li code
+  padding 0.2em 0.35em
+  background-color var(--inline-code)
+  font-size 0.9em
+  border-radius 3px
+
+article table
+  width 100%
+  border-bottom solid 1px var(--line)
+  border-collapse collapse
+
+article table thead
+  background-color var(--line)
+
+article table th,
+article table td
+  padding 0.55rem 0.7rem
+  text-align left
+
+#list h2
+  margin 0 0 1rem
+  font-size clamp(1.8rem, 3vw, 2.2rem)
+
+#list h3
+  margin 1.5rem 0 0.45rem
+  font-size 1.4rem
+
+#list ul + h3
+  margin-top 2rem
+
+#list li
+  display flex
+  align-items baseline
+  justify-content space-between
+  gap 1rem
+  padding 0.55rem 0
+  border-bottom 1px solid var(--line)
+
+#list li:last-child
+  border-bottom none
+
+#list li a
+  min-width 0
+
+#list time,
+#list .count
+  color var(--muted)
+  white-space nowrap
+  font-size 0.95rem
+
+#page-nav
+  display flex
+  justify-content center
+  align-items center
+  flex-wrap wrap
+  gap 0.75rem
+  margin 1.5rem 0 0
+  padding 0.5rem 0
+
+#page-nav .page-number,
+#page-nav .extend,
+#page-nav .space
+  font-family "Ruda", sans-serif
+
+#page-nav a
+  text-decoration none
+
+#page-nav .current
+  color var(--text)
+  font-weight 700
+
+.post-nav ul
+  margin 0.5rem 0 0
+  padding 0.75rem 0 0
+  list-style none
+  display flex
+  justify-content space-between
+  gap 1rem
+  border-top 1px solid var(--line)
+  font-size 0.95rem
+
+.post-nav li
+  flex 1 1 50%
+
+.post-nav li:last-child
+  text-align right
+
+.comment
+  margin-top 2rem
+
+.comment iframe,
+.comment .giscus,
+.comment #giscus-container
+  width 100%
+
+.digest-module
+  display grid
+  gap 1.25rem
+
+.digest-card
+  padding 1.2rem 0
+  border-top 1px solid var(--line)
+
+.digest-card:first-child
+  padding-top 0
+  border-top none
+
+.digest-card h2
+  margin 0 0 0.4rem
+
+footer
+  border-top solid 1px var(--line)
+  margin-top 2rem
+  padding 0.7rem 0 1.2rem
+
+footer ul
+  margin 0
+  padding 0
+  list-style none
+  display flex
+
+footer h6
+  margin 0
+  font-size 0.78rem
+  font-weight 400
+  color var(--muted)

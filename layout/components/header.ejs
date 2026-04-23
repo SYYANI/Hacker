@@ -1,15 +1,62 @@
+<%
+function normalizePath(input) {
+  var value = String(input || '')
+    .replace(/^https?:\/\/[^/]+/i, '')
+    .replace(/^\//, '')
+    .replace(/index\.html$/, '')
+    .replace(/\/+$/, '');
+
+  if (!value) return '';
+  return value.endsWith('.html') ? value : value + '/';
+}
+
+var currentPath = normalizePath(page.path || '');
+var isDigestSection = currentPath === 'digest/' || currentPath.indexOf('digest/') === 0;
+var isTagSection =
+  Boolean(page.tag) ||
+  Boolean(page.category) ||
+  currentPath === 'tags/' ||
+  currentPath.indexOf('tags/') === 0 ||
+  currentPath === 'categories/' ||
+  currentPath.indexOf('categories/') === 0;
+var isAboutPage =
+  currentPath === 'about.html' ||
+  currentPath === 'about/' ||
+  currentPath.indexOf('about/') === 0;
+var isPostsSection = !isDigestSection && !isTagSection && !isAboutPage;
+
+function isMenuActive(target) {
+  var normalizedTarget = normalizePath(url_for(target));
+
+  if (normalizedTarget === 'archives/') return isPostsSection;
+  if (normalizedTarget === 'digest/') return isDigestSection;
+  if (normalizedTarget === 'tags/' || normalizedTarget === 'categories/') return isTagSection;
+  if (normalizedTarget === 'about.html' || normalizedTarget === 'about/') return isAboutPage;
+  if (normalizedTarget === '') return currentPath === '';
+
+  return currentPath === normalizedTarget || currentPath.indexOf(normalizedTarget) === 0;
+}
+%>
+
 <header>
-  <div class="site-branding">
-    <h1 class="site-title">
-      <a href="<%- config.root %>"><%= config.title %></a>
-    </h1>
-    <p class="site-description"><% if (config.subtitle){ %><%= config.subtitle %><% } %></p>
-  </div>
-  <nav class="site-navigation">
+  <h1>
+    <a href="<%- url_for('/') %>"><%= config.title %></a>
+  </h1>
+  <% if (config.subtitle) { %>
+    <p><em><%= config.subtitle %></em></p>
+  <% } %>
+</header>
+
+<% if (theme.menu && Object.keys(theme.menu).length) { %>
+  <nav>
     <ul>
-      <% for (var i in theme.menu){ %>
-        <li><a href="<%- url_for(theme.menu[i]) %>"><%= __(i) %></a></li>
+      <% for (var label in theme.menu) { %>
+        <li>
+          <a class="<%= isMenuActive(theme.menu[label]) ? 'active' : '' %>" href="<%- url_for(theme.menu[label]) %>">
+            <span><%= label %></span>
+          </a>
+        </li>
       <% } %>
     </ul>
   </nav>
-</header>
+<% } %>

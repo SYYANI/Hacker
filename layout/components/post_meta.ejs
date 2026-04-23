@@ -1,0 +1,41 @@
+<%
+function readingMinutes(content) {
+  var text = strip_html(content || '').replace(/\s+/g, ' ').trim();
+  if (!text) return 1;
+
+  var cjkCount = (text.match(/[\u3400-\u9fff]/g) || []).length;
+  var latinWords = text
+    .replace(/[\u3400-\u9fff]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .length;
+
+  var normalizedWords = latinWords + Math.ceil(cjkCount / 2);
+  return Math.max(1, Math.ceil(normalizedWords / 220));
+}
+%>
+
+<aside class="meta-aside">
+  <ul>
+    <% if (item.date) { %>
+      <li>
+        <time class="post-date" datetime="<%= item.date.toDate().toISOString() %>"><%= item.date.format('MMM D, YYYY') %></time>
+      </li>
+    <% } %>
+
+    <% if (item.tags && item.tags.length) { %>
+      <li>
+        <em>
+          <% item.tags.forEach(function(tag, index){ %>
+            <a href="<%- url_for(tag.path) %>">#<%= tag.name %></a><% if (index < item.tags.length - 1) { %> <% } %>
+          <% }) %>
+        </em>
+      </li>
+    <% } %>
+
+    <% if (item.content) { %>
+      <li><%= readingMinutes(item.content) %> minute read</li>
+    <% } %>
+  </ul>
+</aside>

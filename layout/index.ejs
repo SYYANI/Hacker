@@ -1,5 +1,46 @@
-<% page.posts.each(function(item){ %>
-  <%- partial('components/article', {item: item, index: true}) %>
-<% }); %>
+<%
+function escapeHtml(text) {
+  return String(text || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function summaryHtml(item) {
+  if (item.excerpt) return item.excerpt;
+  const text = strip_html(item.content || '').replace(/\s+/g, ' ').trim();
+  if (!text) return '';
+  const preview = text.length > 280 ? `${text.slice(0, 277)}...` : text;
+  return `<p>${escapeHtml(preview)}</p>`;
+}
+%>
+
+<section id="home">
+  <ul>
+    <% page.posts.each(function(item, index){ %>
+      <li<% if (index === 0) { %> class="first"<% } %>>
+        <h1>
+          <a
+            href="<%- item.link ? item.link : url_for(item.path) %>"
+            title="<%= item.title %>"
+            <% if (item.link) { %>target="_blank" rel="noopener"<% } %>
+          ><%= item.title %></a>
+        </h1>
+
+        <%- partial('components/post_meta', { item: item }) %>
+
+        <div class="post-summary">
+          <%- summaryHtml(item) %>
+        </div>
+
+        <% if (!item.link) { %>
+          <a class="read-more" href="<%- url_for(item.path) %>">Read more...</a>
+        <% } %>
+      </li>
+    <% }); %>
+  </ul>
+</section>
 
 <%- partial('components/pagination') %>

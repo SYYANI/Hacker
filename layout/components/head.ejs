@@ -1,77 +1,81 @@
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <%
-    var title = [];
-    if (page.current > 1) {
-      title.push(__('page', page.current));
+    function toPlainText(value) {
+      return strip_html(value || '').replace(/\s+/g, ' ').trim();
     }
+
+    var title = [];
     if (page.title) {
       title.push(page.title);
-    }
-    if (page.category) {
-      title.push(page.category);
-    }
-    if (page.tag) {
-      title.push(page.tag);
-    }
-    if (page.archive){
+    } else if (page.tag) {
+      title.push('#' + page.tag);
+    } else if (page.category) {
+      title.push('#' + page.category);
+    } else if (page.archive) {
       if (page.year) {
         title.push(__('archive_b', page.year + (page.month ? '/' + page.month : '')));
       } else {
-        title.push(__('archive_a'));
+        title.push('All Posts');
       }
     }
-    title.push(config.title);
-    if (config.subtitle) {
-      title.push(config.subtitle);
+    if (page.current > 1) {
+      title.unshift(__('page', page.current));
     }
+    title.push(config.title);
+
+    var description = '';
+    if (page.description) description = toPlainText(page.description);
+    else if (page.excerpt) description = toPlainText(page.excerpt);
+    else if (page.content) description = toPlainText(page.content).slice(0, 180);
+    else if (config.description) description = toPlainText(config.description);
+    else if (config.subtitle) description = toPlainText(config.subtitle);
   %>
-  <title><%= title.join(' | ') %></title>
+  <title><%= title.join(' - ') %></title>
 
-  <% if (config.author){ %>
-  <meta name="author" content="<%= config.author %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <% if (config.author) { %>
+  <meta name="author" content="<%= config.author %>" />
   <% } %>
 
-  <% if (page.description){ %>
-  <meta name="description" content="<%= page.description %>">
-  <% } else if (config.description){ %>
-  <meta name="description" content="<%= config.description %>">
-  <% } else if (page.excerpt){ %>
-  <meta name="description" content="<%= strip_html(page.excerpt).replace(/^\s*/, '').replace(/\s*$/, '') %>">
-  <% } else if (page.content){ %>
-  <meta name="description" content="<%= strip_html(page.content).replace(/^\s*/, '').replace(/\s*$/, '').substring(0, 150) %>">
+  <% if (description) { %>
+  <meta name="description" content="<%= description %>" />
   <% } %>
 
-  <% if (page.keywords){ %>
-  <meta name="keywords" content="<%= page.keywords %>,<%= config.keywords %>">
-  <% } else if (config.keywords){ %>
-  <meta name="keywords" content="<%= config.keywords %>">
-  <% } else if (page.tags){%>
+  <% if (page.keywords) { %>
+  <meta name="keywords" content="<%= page.keywords %><% if (config.keywords) { %>,<%= config.keywords %><% } %>" />
+  <% } else if (config.keywords) { %>
+  <meta name="keywords" content="<%= config.keywords %>" />
+  <% } else if (page.tags) { %>
   <%
     var keywords = [];
     page.tags.forEach(function(tag){
       keywords.push(tag.name);
     });
   %>
-  <meta name="keywords" content="<%= keywords.join(",") %>">
+  <% if (keywords.length) { %>
+  <meta name="keywords" content="<%= keywords.join(',') %>" />
+  <% } %>
   <% } %>
 
-  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-  <% if (page.title){ %><meta property="og:title" content="<%= page.title %>"/><% } %>
-
-  <meta property="og:site_name" content="<%= config.title %>"/>
-
-  <% if(page.cover) { %>
+  <meta property="og:site_name" content="<%= config.title %>" />
+  <meta property="og:title" content="<%= page.title || config.title %>" />
+  <% if (description) { %>
+  <meta property="og:description" content="<%= description %>" />
+  <% } %>
+  <% if (page.permalink) { %>
+  <meta property="og:url" content="<%= page.permalink %>" />
+  <% } %>
+  <% if (page.cover) { %>
   <meta property="og:image" content="<%= page.cover %>" />
-  <% } else if(config.cover) { %>
-  <meta property="og:image" content="<%= config.cover %>"/>
-  <% } else { %>
-  <meta property="og:image" content="<%- config.root %>favicon.ico"/>
+  <% } else if (config.cover) { %>
+  <meta property="og:image" content="<%= config.cover %>" />
   <% } %>
-  <link href="<%- config.root %>favicon.ico" rel="icon">
-  <link rel="alternate" href="<% if (theme.rss){ %><%- theme.rss %><% } else { %><%- config.root %>atom.xml<% } %>" title="<%= config.title %>" type="application/atom+xml">
-  <link rel="stylesheet" href="<%- config.root %>css/style.css" media="screen" type="text/css">
+  <link rel="icon" href="<%- url_for('/favicon.ico') %>" />
+  <link rel="alternate" type="application/atom+xml" href="<%- url_for(theme.rss || 'atom.xml') %>" title="<%= config.title %>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Ruda:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="<%- url_for('/css/style.css') %>" media="screen" type="text/css" />
 </head>
