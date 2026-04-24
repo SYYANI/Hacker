@@ -8,9 +8,38 @@ function escapeHtml(text) {
     .replace(/'/g, '&#39;');
 }
 
+function decodeHtmlEntities(text) {
+  const entities = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    apos: "'",
+    '#39': "'"
+  };
+
+  return String(text || '').replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, function(match, entity) {
+    const normalized = entity.toLowerCase();
+
+    if (Object.prototype.hasOwnProperty.call(entities, normalized)) {
+      return entities[normalized];
+    }
+
+    if (normalized.indexOf('#x') === 0) {
+      return String.fromCharCode(parseInt(normalized.slice(2), 16));
+    }
+
+    if (normalized.charAt(0) === '#') {
+      return String.fromCharCode(parseInt(normalized.slice(1), 10));
+    }
+
+    return match;
+  });
+}
+
 function summaryHtml(item) {
   if (item.excerpt) return item.excerpt;
-  const text = strip_html(item.content || '').replace(/\s+/g, ' ').trim();
+  const text = decodeHtmlEntities(strip_html(item.content || '')).replace(/\s+/g, ' ').trim();
   if (!text) return '';
   const preview = text.length > 280 ? `${text.slice(0, 277)}...` : text;
   return `<p>${escapeHtml(preview)}</p>`;
