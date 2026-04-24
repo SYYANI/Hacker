@@ -72,8 +72,16 @@
   <% } else if (config.cover) { %>
   <meta property="og:image" content="<%= config.cover %>" />
   <% } %>
+  <%
+    var feedPath = 'atom.xml';
+    if (config.feed && config.feed.path) {
+      feedPath = config.feed.path;
+    } else if (theme.rss) {
+      feedPath = theme.rss;
+    }
+  %>
   <link rel="icon" href="<%- url_for('/favicon.ico') %>" />
-  <link rel="alternate" type="application/atom+xml" href="<%- url_for(theme.rss || 'atom.xml') %>" title="<%= config.title %>" />
+  <link rel="alternate" type="application/atom+xml" href="<%- url_for(feedPath) %>" title="<%= config.title %>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Ruda:wght@400;600;700&display=swap" />
